@@ -34,14 +34,18 @@ struct IntelligentCruiseButtonManagement {
     inactive @0;      # No button press or default state
     preActive @1;     # Pre-active state before transitioning to increasing or decreasing
     increasing @2;    # Increasing speed
-    decreasing @3;    # Decreasing speed
-    holding @4;       # Holding steady speed
+    increasingSmall @3;    # Increasing speed
+    decreasing @4;    # Decreasing speed
+    decreasingSmall @5;    # Decreasing speed
+    holding @6;       # Holding steady speed
   }
 
   enum SendButtonState {
     none @0;
     increase @1;
-    decrease @2;
+    increaseSmall @2;
+    decrease @3;
+    decreaseSmall @4;
   }
 }
 

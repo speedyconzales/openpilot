@@ -23,6 +23,8 @@ INACTIVE_TIMER = 0.4
 SEND_BUTTONS = {
   State.increasing: SendButtonState.increase,
   State.decreasing: SendButtonState.decrease,
+  State.increasingSmall: SendButtonState.increaseSmall,
+  State.decreasingSmall: SendButtonState.decreaseSmall,
 }
 
 
@@ -74,11 +76,17 @@ class IntelligentCruiseButtonManagement:
             if self.v_cruise_equal:
               self.state = State.holding
 
-            elif self.v_target > self.v_cruise_cluster:
+            elif self.v_target - self.v_cruise_cluster >= 10:
               self.state = State.increasing
 
-            elif self.v_target < self.v_cruise_cluster and self.v_cruise_cluster > self.v_cruise_min:
+            elif self.v_target - self.v_cruise_cluster < 10:
+              self.state = State.increasingSmall
+
+            elif self.v_cruise_cluster - self.v_target >= 10 and self.v_cruise_cluster > self.v_cruise_min:
               self.state = State.decreasing
+
+            elif self.v_cruise_cluster - self.v_target < 10 and self.v_cruise_cluster > self.v_cruise_min:
+              self.state = State.decreasingSmall
 
         # HOLDING
         elif self.state == State.holding:
@@ -86,12 +94,12 @@ class IntelligentCruiseButtonManagement:
             self.state = State.preActive
 
         # ACCELERATING
-        elif self.state == State.increasing:
+        elif self.state == State.increasing or self.state == State.increasingSmall:
           if self.v_target <= self.v_cruise_cluster:
             self.state = State.holding
 
         # DECELERATING
-        elif self.state == State.decreasing:
+        elif self.state == State.decreasing or self.state == State.decreasingSmall:
           if self.v_target >= self.v_cruise_cluster or self.v_cruise_cluster <= self.v_cruise_min:
             self.state = State.holding
 
